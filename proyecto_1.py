@@ -60,7 +60,7 @@ while is_not_exit:
     Nota 3:   {estudiante['nota_3']}
     Promedio: {estudiante['promedio']}
                             ''')
- 
+
                 input('Presione enter para volver')
             elif option_value == 2:
                 print('-------- Registrar estudiante --------')
@@ -141,17 +141,17 @@ while is_not_exit:
             elif option_value == 3:
                 print('-------- Actualizar estudiante --------')
                 print()
-                
+
                 id_estudiante = input('Ingrese la cédula del estudiante a actualizar: ')
                 print()
-                
+
                 while not id_estudiante.isdigit() or int(id_estudiante) < 0 or not id_estudiante:
                     print("La cédula debe ser un número entero y mayor a 0")
                     id_estudiante = input('Ingrese la cédula del estudiante a actualizar: ')
-                    
+
                 for index, estudiante in enumerate(estudiantes.copy()):
                     if int(id_estudiante) == estudiante['cedula']:
-                        
+
                         name_input = input('Ingrese el nombre del estudiante: ')
 
                         while name_input.replace(',', '.').isdigit() or not name_input:
@@ -227,19 +227,19 @@ while is_not_exit:
                     else:
                         print("------- La cédula ingresada no se encuentra en la lista de estudiantes -------")
                         print()
-                
+
             elif option_value == 4:
                 print('-------- Eliminar estudiante --------')
                 print()
-                
+
                 id_estudiante = input('Ingrese la cédula del estudiante a borrar: ')
                 print()
-                
+
                 while not id_estudiante.isdigit() or int(id_estudiante) < 0 or not id_estudiante:
                     print("La cédula debe ser un número entero y mayor a 0")
                     id_estudiante = input('Ingrese la cédula del estudiante a borrar: ')
-                    
-                
+
+
                 for estudiante in estudiantes.copy():
                     if int(id_estudiante) == estudiante['cedula']:
                         estudiantes.remove(estudiante)
@@ -249,7 +249,7 @@ while is_not_exit:
                     else:
                         print("------- La cédula ingresada no se encuentra en la lista de estudiantes -------")
                         print()
-                
+
         elif option_value == 5:
             is_not_exit = False
         else:
