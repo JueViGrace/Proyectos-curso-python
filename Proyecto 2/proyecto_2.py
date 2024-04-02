@@ -33,9 +33,7 @@ def valid_code(tasks: list, input_text: str):
 
     while len(list(filter(lambda task: task["codigo"] == codigo, tasks))) > 0:
         print("\nEl código introducido ya existe en la lista de tareas")
-        codigo = valid_int(
-            "\nCódigo de la tarea: ", "\nEl código debe ser un número entero"
-        )
+        codigo = valid_int(input_text, "\nEl código debe ser un número entero")
 
     return codigo
 
@@ -124,6 +122,19 @@ def draw_task(data: list):
         )
 
 
+def draw_menu(options: list):
+    """Print menu items"""
+    options = list(
+        map(
+            lambda option: f'Para {option["accion"]}: {option["valor"]}\n',
+            options,
+        )
+    )
+
+    for option in options:
+        print(option)
+
+
 def get_task(tasks: list):
     """get tasks function"""
     menu_options = [
@@ -162,8 +173,7 @@ def filter_task(tasks: list):
 
     while is_not_back:
         print("\nElija una opción\n")
-        for option in menu_options:
-            print(f'Para {option["accion"]}: {option["valor"]}\n')
+        draw_menu(menu_options)
 
         option_selected = validate_option(menu_options)
 
@@ -205,16 +215,12 @@ def create_task(tasks: list):
         "created_at": created_at,
     }
 
+    print("\nTarea creada")
     return [*tasks, task]
 
 
 def update(task, tasks):
     """Update task if there are"""
-    codigo = valid_int(
-        "\nCódigo de la tarea a modificar: ",
-        "\nEl código debe ser un número entero",
-    )
-
     menu_options = [
         {"accion": "Actualizar código", "valor": "1"},
         {"accion": "Actualizar título", "valor": "2"},
@@ -226,58 +232,103 @@ def update(task, tasks):
 
     is_not_back = True
 
-    if task["codigo"] == codigo:
-        while is_not_back:
-            print("\nElija una opción\n")
-            for option in menu_options:
-                print(f'Para {option["accion"]}: {option["valor"]}\n')
+    while is_not_back:
+        print("\nElija una opción\n")
+        draw_menu(menu_options)
 
-            option_selected = validate_option(menu_options)
+        option_selected = validate_option(menu_options)
 
-            if option_selected == 1:
-                new_codigo = valid_code(
-                    tasks,
-                    "\nNuevo código de la tarea: ",
-                )
+        if option_selected == 1:
+            new_codigo = valid_code(
+                tasks,
+                "\nNuevo código de la tarea: ",
+            )
 
-                task["codigo"] = new_codigo
+            task["codigo"] = new_codigo
+            print("\nTarea actualizada")
 
-            elif option_selected == 2:
-                titulo = valid_title("\nNuevo título de la tarea: ")
-                task["titulo"] = titulo
+        elif option_selected == 2:
+            titulo = valid_title("\nNuevo título de la tarea: ")
+            task["titulo"] = titulo
+            print("\nTarea actualizada")
 
-            elif option_selected == 3:
-                description = valid_description("\nNueva descripción de la tarea: ")
-                task["description"] = description
+        elif option_selected == 3:
+            description = valid_description("\nNueva descripción de la tarea: ")
+            task["description"] = description
+            print("\nTarea actualizada")
 
-            elif option_selected == 4:
-                status = valid_status("\nNuevo status de la tarea: ")
-                task["status"] = status
+        elif option_selected == 4:
+            status = valid_status("\nNuevo status de la tarea: ")
+            task["status"] = status
+            print("\nTarea actualizada")
 
-            elif option_selected == 5:
-                created_at = valid_date("\nFecha de creación de la tarea: ")
-                task["created_at"] = created_at
+        elif option_selected == 5:
+            created_at = valid_date("\nFecha de creación de la tarea: ")
+            task["created_at"] = created_at
+            print("\nTarea actualizada")
 
-            elif option_selected == 6:
-                is_not_back = False
-    else:
-        print("\nEl código elegido no existe")
+        elif option_selected == 6:
+            is_not_back = False
 
     return task
 
 
 def update_task(tasks: list):
     """Update task function"""
+    menu_options = [
+        {"accion": "Actualizar por código", "valor": "1"},
+        {"accion": "Atras", "valor": "2"},
+    ]
+    is_not_back = True
+    new_list = []
+    while is_not_back:
+        print("\nElija una opción\n")
+        draw_menu(menu_options)
 
-    if len(tasks) != 0:
-        print("\nNo existen tareas")
-        return []
+        option_selected = validate_option(menu_options)
 
-    return list(map(update, tasks))
+        if option_selected == 1:
+            codigo = valid_int(
+                "\nCódigo de la tarea a modificar: ",
+                "\nEl código debe ser un número entero",
+            )
+            if len([task for task in tasks if task["codigo"] == codigo]) == 0:
+                print("\nEl código introducido no existe en la lista de tareas")
+            else:
+                new_list = list(filter(lambda task: update(task, tasks), tasks))
+
+        elif option_selected == 2:
+            is_not_back = False
+    return new_list
 
 
-def delete_task():
+def delete_task(tasks: list):
     """Delete task function"""
+    menu_options = [
+        {"accion": "Borrar por código", "valor": "1"},
+        {"accion": "Atras", "valor": "2"},
+    ]
+    is_not_back = True
+    new_list = []
+    while is_not_back:
+        print("\nElija una opción\n")
+        draw_menu(menu_options)
+
+        option_selected = validate_option(menu_options)
+
+        if option_selected == 1:
+            codigo = valid_int(
+                "\nCódigo de la tarea: ", "\nEl código debe ser un número entero"
+            )
+            if len([task for task in tasks if task["codigo"] == codigo]) == 0:
+                print("\nEl código introducido no existe en la lista de tareas")
+            else:
+                print("\nTarea eliminada")
+                new_list = list(filter(lambda task: task["codigo"] != codigo, tasks))
+
+        elif option_selected == 2:
+            is_not_back = False
+    return new_list
 
 
 def finish():
@@ -318,8 +369,7 @@ def main():
 
     while is_not_exit:
         print("\nElija una opción\n")
-        for option in options:
-            print(f'Para {option["accion"]}: {option["valor"]}\n')
+        draw_menu(options)
 
         option_selected = validate_option(options)
 
@@ -332,7 +382,7 @@ def main():
         elif option_selected == 4:
             tasks = update_task(tasks)
         elif option_selected == 5:
-            delete_task()
+            tasks = delete_task(tasks)
         elif option_selected == 6:
             finish()
             break
