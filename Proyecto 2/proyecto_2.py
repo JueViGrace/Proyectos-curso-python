@@ -100,7 +100,10 @@ def find(input_value: str, field: str, tasks: list):
     if len(tasks) == 0:
         print("\nNo hay tareas que mostrar")
     else:
-        data = list(filter(lambda task: task[field] == input_value, tasks))
+        if field == "codigo":
+            data = list(filter(lambda task: task[field] == input_value, tasks))
+        else :
+            data = list(filter(lambda task: task[field].startswith(input_value), tasks))
         if len(data) == 0:
             print("\nNo hay tareas que mostrar")
         else:
@@ -295,7 +298,14 @@ def update_task(tasks: list):
             if len([task for task in tasks if task["codigo"] == codigo]) == 0:
                 print("\nEl código introducido no existe en la lista de tareas")
             else:
-                new_list = list(filter(lambda task: update(task, tasks), tasks))
+                new_list = list(
+                    filter(
+                        lambda task: (
+                            update(task, tasks) if task["codigo"] == codigo else task
+                        ),
+                        tasks,
+                    )
+                )
 
         elif option_selected == 2:
             is_not_back = False
