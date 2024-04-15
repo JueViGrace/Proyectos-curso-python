@@ -1,7 +1,8 @@
 """Usuario"""
 
 from persona import Persona
-from cuenta import Cuenta
+from cuenta.Cuenta import Cuenta
+
 
 class Usuario(Persona):
     """Clase Usuario"""
@@ -12,10 +13,10 @@ class Usuario(Persona):
         self,
         nombre: str,
         apellido: str,
-        cedula: str,
+        cedula: int,
         username: str,
         password: str,
-        cuentas: list[Cuenta],
+        cuentas: list[Cuenta] = None,
     ) -> None:
         super().__init__(nombre, apellido, cedula)
         self.username = username
@@ -33,3 +34,7 @@ class Usuario(Persona):
     def set_cuentas(self, new_cuentas: list[Cuenta]):
         """Set cuentas"""
         self.cuentas = new_cuentas
+
+    def validate_password(self, password: str):
+        """Validate password"""
+        return self._password == password

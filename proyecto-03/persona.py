@@ -1,8 +1,10 @@
 """Persona"""
 
+
 class Persona:
     """Clase persona"""
-    def __init__(self, nombre: str, apellido: str, cedula: str) -> None:
+
+    def __init__(self, nombre: str, apellido: str, cedula: int) -> None:
         self.nombre = nombre
         self.apellido = apellido
         self.cedula = cedula
@@ -15,7 +17,6 @@ class Persona:
         """Set apellido"""
         self.apellido = new_apellido
 
-    def set_cedula(self, new_cedula: str):
+    def set_cedula(self, new_cedula: int):
         """Set cedula"""
         self.cedula = new_cedula
-

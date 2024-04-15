@@ -1,5 +1,6 @@
 """Cuenta"""
 
+
 class Cuenta:
     """Clase Cuenta"""
 
