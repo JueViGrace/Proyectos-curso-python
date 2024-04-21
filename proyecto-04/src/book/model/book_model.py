@@ -21,16 +21,16 @@ class BookModel(BaseModel):
             "examples": [
                 {
                     "id": uuid1(),
-                    "titulo": "Ejemplo",
-                    "autor": [
+                    "title": "Ejemplo",
+                    "authors": [
                         {
                             "id": uuid1(),
-                            "nombre": "Ejemplo",
-                            "fecha_nacimiento": "01-01-2001",
+                            "fullname": "Ejemplo",
+                            "date_birth": "01-01-2001",
                         }
                     ],
-                    "categoria": "ejemplo",
-                    "year": 2024,
+                    "category": "ejemplo",
+                    "release_date": 2024,
                 }
             ]
         }
