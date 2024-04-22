@@ -72,7 +72,6 @@ def create_book(body: BookModel):
                 for db_author in data["authors"]
                 if author["id"] == db_author["id"]
             ]
-            logger.debug(author)
 
     if len(valid_authors) == 0:
         return JSONResponse(
@@ -81,7 +80,7 @@ def create_book(body: BookModel):
         )
 
     new_book = {
-        "id": uuid1(),
+        "id": str(uuid1()),
         "title": title,
         "category": category,
         "release_date": release_date,
@@ -93,14 +92,73 @@ def create_book(body: BookModel):
     with open(f"{dirname}/db.json", "w", encoding="utf-8") as db:
         dump(data, db, indent=2)
 
-    return JSONResponse(content={"message": "Book created successfully"})
+    return JSONResponse(
+        content={"message": "Book created successfully"},
+        status_code=status.HTTP_201_CREATED,
+    )
 
 
-@books_router.put("/update/{id}")
-def update_book(id: str, body: BookModel):
+@books_router.put("/update/{book_id}")
+def update_book(book_id: str, body: BookModel):
     """Update book"""
+
+    title, category, release_date, authors = itemgetter(
+        "title", "category", "release_date", "authors"
+    )(body.model_dump())
+
+    valid_authors = []
+
+    with open(f"{dirname}/db.json", "r", encoding="utf-8") as db:
+        data = load(db)
+
+        for author in authors:
+            valid_authors = [
+                db_author
+                for db_author in data["authors"]
+                if author["id"] == db_author["id"]
+            ]
+
+    if len(valid_authors) == 0:
+        return JSONResponse(
+            content={"message": "One or more authors is not valid"},
+            status_code=status.HTTP_400_BAD_REQUEST,
+        )
+
+    for book in data["books"]:
+        if book["id"] == book_id:
+            book["title"] = title
+            book["category"] = category
+            book["release_date"] = release_date
+            book["authors"] = authors
+
+    with open(f"{dirname}/db.json", "w", encoding="utf-8") as db:
+        dump(data, db, indent=2)
+
+    return JSONResponse(
+        content={"message": "Book updated successfully"},
+        status_code=status.HTTP_201_CREATED,
+    )
 
 
 @books_router.delete("/delete/{id}")
 def delete_book(id: str = Path(min_length=10)):
     """Delete book"""
+    with open(f"{dirname}/db.json", "r", encoding="utf-8") as db:
+        data = load(db)
+        books = data["books"]
+
+        valid_id = [book for book in books if id == book["id"]]
+
+    if len(valid_id) == 0:
+        return JSONResponse(content={"message": "Book not found"})
+
+    result = [book for book in books if book["id"] != id]
+
+    data["books"] = result
+
+    with open(f"{dirname}/db.json", "w", encoding="utf-8") as db:
+        dump(data, db, indent=2)
+
+    return JSONResponse(
+        content={"message": "Book deleted successfully"}, status_code=200
+    )
